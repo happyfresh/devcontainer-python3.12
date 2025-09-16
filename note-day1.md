@@ -6,7 +6,12 @@ Total time about 30 mins
 
 Prompt:
 ```
-Scaffold a monorepo project with backend and frontend directories.
+Scaffold a monorepo project with backend and **Acceptance Criteria:**
+
+* [ ] Clicking "Upload" triggers backend call and animates progress.
+* [ ] Success toast shown; files/progress reset.
+* [ ] Failure toast shown; UI re-enabled for retry.
+* [ ] Duplicate submissions prevented during in-flight uploads.nd directories.
 
 Requirements:
 - Backend should be a FastAPI service (latest version).
@@ -77,10 +82,22 @@ Total time about 10 mins
 
 **Acceptance Criteria:**
 
-* [x] Users can select multiple images and see filenames + sizes.
-* [x] Non-image files are blocked or clearly warned.
-* [x] Empty state visible when no files selected.
-* [x] Button/input accessible via keyboard with proper label/aria-label.
+* [ ] Users can select multiple images and see filenames + sizes.
+* [ ] Non-image files are blocked or clearly warned.
+* [ ] Empty state visible when no files selected.
+* [ ] Button/input accessible via keyboard with proper label/aria-label.
+
+**Implementation Notes:**
+
+- Added React state (`useState`) to store selected files as an array.
+- Used `useRef` to reference the hidden file input for programmatic triggering.
+- Implemented `formatSize` helper function to convert file sizes to human-readable format (Bytes, KB, MB, GB).
+- `handleFileSelect` function filters selected files to only include images (checking `file.type.startsWith('image/')`), shows an alert warning for any non-image files, and updates state with valid images.
+- Hidden `<input type="file" accept="image/*" multiple />` is triggered by clicking the shadcn Button.
+- File list is rendered as an unordered list showing filename and formatted size.
+- Empty state displays "No images selected." when no files are chosen.
+- Added `aria-label` attributes to both the button and input for accessibility.
+- The UI is centered and uses Tailwind classes for styling.
 
 ---
 
@@ -115,7 +132,7 @@ Total time about 30 mins
 
 **Acceptance Criteria:**
 
-* [ ] Clicking “Upload” triggers backend call and animates progress.
+* [ ] Clicking "Upload" triggers backend call and animates progress.
 * [ ] Success toast shown; files/progress reset.
 * [ ] Failure toast shown; UI re-enabled for retry.
 * [ ] Duplicate submissions prevented during in-flight uploads.
