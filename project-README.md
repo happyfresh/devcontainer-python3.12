@@ -55,7 +55,7 @@ The frontend is currently a placeholder. It will be implemented as a React appli
 ### Health Check
 - `GET /health` - Returns service health status
 
-### File Upload  
+### File Upload
 - `POST /api/upload` - Upload files (multipart/form-data)
 
 ## Technology Stack

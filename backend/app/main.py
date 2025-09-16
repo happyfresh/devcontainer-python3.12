@@ -1,7 +1,6 @@
+from app.routes import health, upload
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
-from app.routes import health, upload
 
 app = FastAPI(
     title="FastAPI Backend Service",

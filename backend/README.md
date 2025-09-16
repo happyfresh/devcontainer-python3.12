@@ -155,7 +155,7 @@ To modify CORS settings, edit the `CORSMiddleware` configuration in `app/main.py
 Main dependencies (see `pyproject.toml` for complete list):
 
 - **FastAPI**: Modern, fast web framework for building APIs
-- **Uvicorn**: ASGI server for running FastAPI applications  
+- **Uvicorn**: ASGI server for running FastAPI applications
 - **python-multipart**: Required for handling file uploads
 
 Development dependencies:
