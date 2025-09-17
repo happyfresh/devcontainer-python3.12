@@ -98,10 +98,10 @@ Total time about 30 mins
 
 **Acceptance Criteria:**
 
-* [ ] `uploadImages(files, onProgress)` exists and returns parsed response data.
-* [ ] Progress callback receives 0–100 during upload.
-* [ ] Uses `VITE_API_BASE_URL` when present; otherwise relative `/api/upload`.
-* [ ] Body is `multipart/form-data` with `files[]`.
+* [x] `uploadImages(files, onProgress)` exists and returns parsed response data.
+* [x] Progress callback receives 0–100 during upload.
+* [x] Uses `VITE_API_BASE_URL` when present; otherwise relative `/api/upload`.
+* [x] Body is `multipart/form-data` with `files[]`.
 
 ---
 
@@ -115,10 +115,10 @@ Total time about 30 mins
 
 **Acceptance Criteria:**
 
-* [ ] Clicking “Upload” triggers backend call and animates progress.
-* [ ] Success toast shown; files/progress reset.
-* [ ] Failure toast shown; UI re-enabled for retry.
-* [ ] Duplicate submissions prevented during in-flight uploads.
+* [x] Clicking “Upload” triggers backend call and animates progress.
+* [x] Success toast shown; files/progress reset.
+* [x] Failure toast shown; UI re-enabled for retry.
+* [x] Duplicate submissions prevented during in-flight uploads.
 
 ---
 

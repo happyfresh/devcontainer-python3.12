@@ -1,9 +1,13 @@
 import { useRef, useState } from 'react'
 import { Button } from '../components/ui/button'
+import { Progress } from '../components/ui/progress'
 import { toast } from '../components/ui/use-toast'
+import { uploadImages } from '../lib/api'
 
 function UploadPage() {
     const [selectedFiles, setSelectedFiles] = useState([])
+    const [progress, setProgress] = useState(0)
+    const [isUploading, setIsUploading] = useState(false)
     const fileInputRef = useRef(null)
 
     const formatFileSize = (bytes) => {
@@ -20,11 +24,7 @@ function UploadPage() {
         // Filter for image files
         const imageFiles = files.filter(file => {
             if (!file.type.startsWith('image/')) {
-                toast({
-                    title: "Invalid file type",
-                    description: `${file.name} is not an image file`,
-                    variant: "destructive"
-                })
+                toast.error(`${file.name} is not an image file`)
                 return false
             }
             return true
@@ -35,6 +35,37 @@ function UploadPage() {
 
     const handleSelectImages = () => {
         fileInputRef.current?.click()
+    }
+
+    const handleUpload = async () => {
+        if (selectedFiles.length === 0 || isUploading) {
+            return
+        }
+
+        setIsUploading(true)
+        setProgress(0)
+
+        try {
+            await uploadImages(selectedFiles, setProgress)
+
+            // Success: show toast and reset
+            toast.success(`Successfully uploaded ${selectedFiles.length} file(s)`)
+
+            // Reset state
+            setSelectedFiles([])
+            setProgress(0)
+
+            // Clear file input
+            if (fileInputRef.current) {
+                fileInputRef.current.value = ''
+            }
+        } catch (error) {
+            // Error: show failure toast
+            const errorMessage = error.response?.data?.detail || "Failed to upload files. Please try again."
+            toast.error(errorMessage)
+        } finally {
+            setIsUploading(false)
+        }
     }
 
     return (
@@ -87,27 +118,49 @@ function UploadPage() {
                                 </p>
                             </div>
                         ) : (
-                            <div className="space-y-2">
-                                <h3 className="text-sm font-medium text-muted-foreground">
-                                    Selected Files ({selectedFiles.length})
-                                </h3>
-                                <div className="space-y-2 max-h-60 overflow-y-auto">
-                                    {selectedFiles.map((file, index) => (
-                                        <div
-                                            key={`${file.name}-${index}`}
-                                            className="flex justify-between items-center p-3 bg-muted/50 rounded-md"
-                                        >
-                                            <div className="flex-1 min-w-0">
-                                                <p className="text-sm font-medium truncate">
-                                                    {file.name}
-                                                </p>
-                                                <p className="text-xs text-muted-foreground">
-                                                    {formatFileSize(file.size)}
-                                                </p>
+                            <div className="space-y-4">
+                                <div className="space-y-2">
+                                    <h3 className="text-sm font-medium text-muted-foreground">
+                                        Selected Files ({selectedFiles.length})
+                                    </h3>
+                                    <div className="space-y-2 max-h-60 overflow-y-auto">
+                                        {selectedFiles.map((file, index) => (
+                                            <div
+                                                key={`${file.name}-${index}`}
+                                                className="flex justify-between items-center p-3 bg-muted/50 rounded-md"
+                                            >
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="text-sm font-medium truncate">
+                                                        {file.name}
+                                                    </p>
+                                                    <p className="text-xs text-muted-foreground">
+                                                        {formatFileSize(file.size)}
+                                                    </p>
+                                                </div>
                                             </div>
-                                        </div>
-                                    ))}
+                                        ))}
+                                    </div>
                                 </div>
+
+                                {/* Upload button */}
+                                <Button
+                                    onClick={handleUpload}
+                                    disabled={selectedFiles.length === 0 || isUploading}
+                                    className="w-full"
+                                >
+                                    {isUploading ? 'Uploading...' : 'Upload'}
+                                </Button>
+
+                                {/* Progress bar (show only when uploading) */}
+                                {isUploading && (
+                                    <div className="space-y-2">
+                                        <div className="flex justify-between text-sm">
+                                            <span>Progress</span>
+                                            <span>{progress}%</span>
+                                        </div>
+                                        <Progress value={progress} className="w-full" />
+                                    </div>
+                                )}
                             </div>
                         )}
                     </div>
