@@ -132,10 +132,10 @@ Total time about 30 mins
 
 **Acceptance Criteria:**
 
-* [ ] Modern, clean page consistent with Tailwind + shadcn/ui.
-* [ ] Keyboard navigation and focus states verified; inputs labeled.
-* [ ] `frontend/README.md` includes env config and acceptance checklist.
-* [ ] (Optional) Drag-and-drop with previews works without breaking basic flow.
+* [x] Modern, clean page consistent with Tailwind + shadcn/ui.
+* [x] Keyboard navigation and focus states verified; inputs labeled.
+* [x] `frontend/README.md` includes env config and acceptance checklist.
+* [x] (Optional) Drag-and-drop with previews works without breaking basic flow.
 
 ---
 
