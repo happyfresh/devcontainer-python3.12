@@ -57,8 +57,8 @@ Total time about 20 mins
 
 **Acceptance Criteria:**
 
-* [ ] Navigating to `/upload` renders `UploadPage.jsx`.
-* [ ] No hydration/console warnings.
+* [x] Navigating to `/upload` renders `UploadPage.jsx`.
+* [x] No hydration/console warnings.
 * [ ] Toaster still visible globally across routes.
 
 ---
