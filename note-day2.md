@@ -8,7 +8,7 @@
 
 **Prompt:**
 
-> Add/ensure a `/detections/{id}` endpoint. If it doesn't exist, create a minimal version that reads the uploaded image from s### Task 2.3.10 — Read endpoints for UI (roles, candidates, detail)
+> Add/ensure a `/detections/{id}` endpoint. If it doesn't exist, create a minimal version that reads the uploaded image from storage. Call Azure Computer Vision Object Detection (use v3.2 analyze API) using env vars `VISION_ENDPOINT` and `VISION_KEY`. Normalize the response into `{ boxes: [{ label, x, y, w, h, score }] }`. On any failure (missing key, API error), return `{ boxes: [] }` and a non-200 error code with a helpful message.
 
 **Objective**
 Provide minimal read APIs the React app can consume.
@@ -24,37 +24,12 @@ Provide minimal read APIs the React app can consume.
 
 **Acceptance Criteria**
 
-* [ ] Curling the endpoints returns JSON with expected fields.
-* [ ] Server supports simple search and pagination.
-* [ ] CORS works for local Vite dev server.
-
-**Implementation Summary:**
-- Added response models: `RoleResponse`, `CandidateListItem`, `CandidatesResponse`, `CandidateDetailResponse`
-- Implemented `GET /roles` returning all roles with id, title, department
-- Implemented `GET /candidates` with full filtering and pagination:
-  - Search filter: name OR resume_text contains search term
-  - Category filter: exact match on raw_category
-  - Role ID filter: exact match on applied_role_id
-  - Pagination: page, page_size with total count and metadata
-- Implemented `GET /candidates/{id}` returning full candidate details including resume and scoring
-- All endpoints return clean JSON (no ORM objects)
-- CORS already configured for `http://localhost:5173`
-- Comprehensive testing: all filters, pagination, error cases, and CORS preflight verifiedComputer Vision Object Detection (use v3.2 analyze API) using env vars `VISION_ENDPOINT` and `VISION_KEY`. Normalize the response into `{ boxes: [{ label, x, y, w, h, score }] }`. On any failure (missing key, API error), return `{ boxes: [] }` and a non-200 error code with a helpful message.
-
-**Acceptance Criteria:**
-
-* [ ] Endpoint exists and runs for everyone.
-* [ ] On success, returns real detection results.
-* [ ] On failure, degrades gracefully with `{ "boxes": [] }` and logs a readable error.
-
-**Implementation Summary:**
-- Created `/api/detections/{id}` endpoint in `app/api/detection.py`
-- Added Azure Computer Vision API integration using v3.2 analyze endpoint
-- Configured `VISION_ENDPOINT` and `VISION_KEY` environment variables
-- Implemented graceful error handling for missing credentials, API failures, and network issues
-- Returns normalized bounding boxes with format `{label, x, y, w, h, score}`
-- Added comprehensive test suite with 8 test cases
-- All tests passing, endpoint functional and properly handles all error scenarios
+* [x] Curling the endpoints returns JSON with expected fields.
+* [x] Server supports simple search and pagination.
+* [x] CORS works for local Vite dev server.
+* [x] Endpoint exists and runs for everyone.
+* [x] On success, returns real detection results.
+* [x] On failure, degrades gracefully with `{ "boxes": [] }` and logs a readable error.
 
 ---
 
@@ -87,15 +62,6 @@ Provide minimal read APIs the React app can consume.
 * [ ] `docker compose up` starts both services locally.
 * [ ] Frontend reachable; backend health endpoint returns OK.
 * [ ] Upload → detection → report works locally with env set.
-
-**Implementation Summary:**
-- Created optimized `backend/Dockerfile` using official UV installation method
-- Created production-ready `frontend/Dockerfile` with multi-stage build (Node.js + Nginx)
-- Added `docker-compose.yml` with proper service orchestration, health checks, and networking
-- Documented comprehensive setup in root `README.md` with environment variables reference
-- Used Docker best practices: non-root users, layer caching, health checks, and security
-- Backend optimizations: UV package manager, bytecode compilation, cache mounts
-- Frontend optimizations: production build, custom nginx config, proper routing support
 
 ---
 
@@ -140,20 +106,6 @@ Add AOAI client + config to the existing FastAPI project (no new app). Use env-b
 * [ ] Running server with correct envs succeeds; missing/wrong `x-api-key` → **401**.
 * [ ] `aoai_chat(messages, response_format=None)` is importable and calls Azure OpenAI.
 * [ ] No duplicate FastAPI instances; reuses the Day-1 app object.
-
-**Implementation Summary:**
-- Extended `app/config.py` with Azure OpenAI configuration: `API_TOKEN`, `AZURE_OPENAI_ENDPOINT`, `AZURE_OPENAI_API_KEY`, `AZURE_OPENAI_DEPLOYMENT`
-- Created `app/ai.py` module with `aoai_chat()` function using OpenAI 1.x SDK configured for Azure
-- Added `verify_api_key()` FastAPI dependency for x-api-key header authentication
-- Added OpenAI dependency to `pyproject.toml` and installed via `uv sync`
-- Authentication tested: missing header returns 422, wrong key returns 401, correct key returns 200
-- Azure OpenAI integration functional with real API calls
-- All existing endpoints remain functional
-
-**New API Endpoints:**
-- `GET /api/aoai/test` - Test endpoint to verify Azure OpenAI authentication (requires x-api-key header)
-- `POST /api/aoai/chat` - Test endpoint for Azure OpenAI chat functionality (requires x-api-key header, accepts array of messages)
-- `POST /score_candidate` - Score candidate resumes against job roles with auto-rubric generation (requires x-api-key header)
 
 ---
 
@@ -217,16 +169,6 @@ Add a single endpoint that (a) validates inputs, (b) derives rubric if missing, 
   Returns HTTP **200** with **valid JSON** and keys: `score_0_100` (0–100), `strengths` (>=3), `risks` (>=3), `explanation` (non-empty), `role_profile_used` (non-empty).
 * [ ] Error path: missing role context returns HTTP **400** with clear message.
 * [ ] Wrong API key returns **401**.
-
-**Implementation Summary:**
-- Created `POST /score_candidate` endpoint in `app/api/scoring.py`
-- Added Pydantic models `ScoreRequest` and `ScoreResponse` with proper validation
-- Implemented input validation: resume_text minimum 50 characters, role context requirements
-- Auto-generates rubric using `synthesize_rubric()` when `role_profile` is missing
-- Integrated Azure OpenAI with structured JSON response format for consistent scoring
-- Added score clamping to [0,100] range and proper error handling
-- Protected with `x-api-key` authentication using existing `verify_api_key` dependency
-- All test scenarios passed: happy path (200), missing role context (400), wrong API key (401)
 
 ---
 
