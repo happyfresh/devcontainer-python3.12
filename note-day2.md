@@ -57,6 +57,8 @@ Provide minimal read APIs the React app can consume.
 
 > Create `Dockerfile` for backend (FastAPI + uvicorn) and frontend (Vite build → static server or served by backend). Add `docker-compose.yml` wiring ports and env vars. Commands: `docker compose up --build`. Document environment variables in a root `README.md`.
 
+**Note:** Exit the dev container before running these commands, as Docker and docker-compose are set up on the host machine directly.
+
 **Acceptance Criteria:**
 
 * [ ] `docker compose up` starts both services locally.
@@ -72,6 +74,8 @@ Provide minimal read APIs the React app can consume.
 **Prompt:**
 
 > Generate an az CLI script to: (1) create ACR if needed; (2) build & push both images; (3) deploy backend and frontend container apps; (4) set env vars `VISION_ENDPOINT`, `VISION_KEY`, `AOAI_ENDPOINT`, `AOAI_KEY`, `SEARCH_ENDPOINT`, `SEARCH_KEY`, and frontend `VITE_API_BASE_URL`. Output the public URLs.
+
+**Note:** Exit the dev container before running the az CLI script, as az CLI is set up on the host machine directly.
 
 **Acceptance Criteria:**
 
@@ -250,7 +254,7 @@ Create a local SQLite database and models for `roles` and `candidates`, includin
 > * Models:
 >
 >   * Role(id PK, title, department, role\_profile TEXT).
->   * Candidate(id PK, name, raw\_category, resume\_text TEXT, applied\_role\_id FK→Role, fit\_score INT NULL, strengths TEXT NULL, risks TEXT NULL, explanation TEXT NULL, updated\_at).
+>   * Candidate(id PK, name, raw\_category, resume\_text TEXT, applied\_role\_id FK→Role, fit_score INT NULL, strengths TEXT NULL, risks TEXT NULL, explanation TEXT NULL, updated\_at).
 > * Create `database.py` with engine, SessionLocal, and `init_db()` that creates tables.
 > * Wire dependency `get_db()` into FastAPI.
 > * Call `init_db()` at startup.”
@@ -283,7 +287,7 @@ Quickly load a small subset of the open-resume dataset into SQLite. Keep it fast
 > “Add a `scripts/seed.py` that:
 >
 > * Reads `data/candidates.csv` with columns: id,name,Resume\_str,Category.
-> * Inserts/upsserts into Candidate: `name`, `resume_text=Resume_str`, `raw_category=Category`.
+> * Inserts/upserts into Candidate: `name`, `resume_text=Resume_str`, `raw_category=Category`.
 > * Also insert 3 sample Roles with realistic `role_profile` JDs (e.g., Information-Technology, ‘Accountant’, ‘HR Generalist’, ‘Sales’).
 > * Provide a `make seed` or `uv run scripts/seed.py` command in README.
 > * If rows already exist, skip duplicates.”
