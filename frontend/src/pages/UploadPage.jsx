@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
+import DetectionOverlay from '../components/DetectionOverlay'
 import { Button } from '../components/ui/button'
 import { Progress } from '../components/ui/progress'
 import { toast } from '../components/ui/use-toast'
-import { uploadImages } from '../lib/api'
+import { getDetections, uploadImages } from '../lib/api'
 
 function UploadPage() {
     const [selectedFiles, setSelectedFiles] = useState([])
@@ -10,6 +11,9 @@ function UploadPage() {
     const [isUploading, setIsUploading] = useState(false)
     const [isDragOver, setIsDragOver] = useState(false)
     const [filePreviews, setFilePreviews] = useState({})
+    const [uploadedImages, setUploadedImages] = useState([]) // Store uploaded image data
+    const [detectionResults, setDetectionResults] = useState({}) // Store detection results by image ID
+    const [isLoadingDetections, setIsLoadingDetections] = useState(false)
     const fileInputRef = useRef(null)
 
     const formatFileSize = (bytes) => {
@@ -92,10 +96,32 @@ function UploadPage() {
         setProgress(0)
 
         try {
-            await uploadImages(selectedFiles, setProgress)
+            const uploadResponse = await uploadImages(selectedFiles, setProgress)
 
-            // Success: show toast and reset
+            // Success: show toast
             toast.success(`Successfully uploaded ${selectedFiles.length} file(s)`)
+
+            // Store uploaded images for display
+            const uploadedImageData = uploadResponse.files || []
+            setUploadedImages(uploadedImageData)
+
+            // Start loading detections for each uploaded image
+            setIsLoadingDetections(true)
+            const newDetectionResults = {}
+
+            for (const imageData of uploadedImageData) {
+                try {
+                    // Use saved_filename as the image ID for the detection API
+                    const detections = await getDetections(imageData.saved_filename)
+                    newDetectionResults[imageData.saved_filename] = detections.boxes || []
+                } catch (error) {
+                    console.error(`Failed to get detections for ${imageData.saved_filename}:`, error)
+                    newDetectionResults[imageData.saved_filename] = []
+                }
+            }
+
+            setDetectionResults(newDetectionResults)
+            setIsLoadingDetections(false)
 
             // Clean up previews
             Object.values(filePreviews).forEach(url => URL.revokeObjectURL(url))
@@ -113,6 +139,7 @@ function UploadPage() {
             // Error: show failure toast
             const errorMessage = error.response?.data?.detail || "Failed to upload files. Please try again."
             toast.error(errorMessage)
+            setIsLoadingDetections(false)
         } finally {
             setIsUploading(false)
         }
@@ -164,8 +191,8 @@ function UploadPage() {
                     {selectedFiles.length === 0 ? (
                         <div
                             className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${isDragOver
-                                    ? 'border-primary bg-primary/5'
-                                    : 'border-muted-foreground/25'
+                                ? 'border-primary bg-primary/5'
+                                : 'border-muted-foreground/25'
                                 }`}
                             onDragOver={handleDragOver}
                             onDragLeave={handleDragLeave}
@@ -244,6 +271,68 @@ function UploadPage() {
                         </div>
                     )}
                 </div>
+
+                {/* Uploaded Images with Detection Results */}
+                {uploadedImages.length > 0 && (
+                    <div className="mt-8 bg-card border rounded-xl shadow-lg p-8 backdrop-blur-sm">
+                        <h2 className="text-xl font-semibold mb-6 text-center">
+                            Detection Results
+                            {isLoadingDetections && (
+                                <span className="ml-2 text-sm text-muted-foreground">
+                                    (Analyzing images...)
+                                </span>
+                            )}
+                        </h2>
+
+                        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                            {uploadedImages.map((image) => {
+                                const boxes = detectionResults[image.saved_filename] || []
+                                const baseUrl = import.meta.env.VITE_API_BASE_URL ?? '';
+                                const imageUrl = `${baseUrl}/api/uploads/${image.saved_filename}`;
+
+                                return (
+                                    <div key={image.saved_filename} className="space-y-3">
+                                        <div className="bg-muted/30 rounded-lg p-4">
+                                            <h3 className="text-sm font-medium mb-2 truncate">
+                                                {image.original_filename}
+                                            </h3>
+
+                                            <div className="relative">
+                                                <DetectionOverlay
+                                                    imageUrl={imageUrl}
+                                                    boxes={boxes}
+                                                />
+                                            </div>
+
+                                            <div className="mt-2 text-xs text-muted-foreground">
+                                                {isLoadingDetections ? (
+                                                    <span>Analyzing...</span>
+                                                ) : (
+                                                    <span>
+                                                        {boxes.length === 0
+                                                            ? "No objects detected"
+                                                            : `${boxes.length} object(s) detected`
+                                                        }
+                                                    </span>
+                                                )}
+                                            </div>
+
+                                            {boxes.length > 0 && !isLoadingDetections && (
+                                                <div className="mt-2 space-y-1">
+                                                    {boxes.map((box, index) => (
+                                                        <div key={index} className="text-xs text-muted-foreground">
+                                                            • {box.label} ({Math.round(box.score * 100)}%)
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                )
+                            })}
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     )

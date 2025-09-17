@@ -2,9 +2,12 @@
 FastAPI application main module.
 """
 
+from pathlib import Path
+
 from app.routes import detection, health, upload
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 app = FastAPI(
     title="Bootcamp FastAPI Backend",
@@ -30,6 +33,12 @@ app.add_middleware(
 app.include_router(health.router, prefix="/api", tags=["health"])
 app.include_router(upload.router, prefix="/api", tags=["upload"])
 app.include_router(detection.router, prefix="/api", tags=["detection"])
+
+# Mount uploads directory for serving uploaded files
+UPLOAD_DIR = Path("uploads")
+UPLOAD_DIR.mkdir(exist_ok=True)
+app.mount("/api/uploads", StaticFiles(directory=str(UPLOAD_DIR)),
+          name="uploads")
 
 
 @app.get("/")

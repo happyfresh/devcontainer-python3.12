@@ -50,3 +50,17 @@ export async function uploadImages(files, onProgress) {
 
     return response.data;
 }
+
+/**
+ * Fetches object detection results for an uploaded image
+ * @param {string} imageId - The ID/filename of the uploaded image
+ * @returns {Promise<Object>} - Object with 'boxes' array containing detection results
+ */
+export async function getDetections(imageId) {
+    // Determine the API endpoint
+    const baseUrl = import.meta.env.VITE_API_BASE_URL ?? '';
+    const endpoint = `${baseUrl}/api/detections/${imageId}`;
+
+    const response = await axios.get(endpoint);
+    return response.data;
+}
