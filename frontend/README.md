@@ -1,25 +1,12 @@
-# Frontend
+# React + Vite
 
-This directory is reserved for the frontend application.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## Planned Structure
+Currently, two official plugins are available:
 
-The frontend will be implemented as a modern React application with:
-- Vite for development and build tooling
-- Tailwind CSS for styling
-- shadcn/ui for UI components
-- File upload interface connecting to the FastAPI backend
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Integration
+## Expanding the ESLint configuration
 
-The frontend will connect to the FastAPI backend running on:
-- Development: `http://localhost:8000`
-- Production: Configure via environment variables
-
-## Next Steps
-
-1. Set up Vite React application
-2. Configure Tailwind CSS
-3. Install shadcn/ui components
-4. Implement file upload interface
-5. Add routing and navigation
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
