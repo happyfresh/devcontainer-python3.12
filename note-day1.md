@@ -141,9 +141,9 @@ Total time about 30 mins
 
 ### Overall Acceptance (cross-task)
 
-* [ ] `/upload` page exists and is reachable.
-* [ ] Users can select and upload one or multiple images.
-* [ ] Uploads hit backend and show progress + success/failure feedback.
-* [ ] Page uses shadcn/ui components and app is bootstrapped with Vite under `frontend/`.
+* [x] `/upload` page exists and is reachable.
+* [x] Users can select and upload one or multiple images.
+* [x] Uploads hit backend and show progress + success/failure feedback.
+* [x] Page uses shadcn/ui components and app is bootstrapped with Vite under `frontend/`.
 
 ---

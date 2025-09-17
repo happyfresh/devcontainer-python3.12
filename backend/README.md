@@ -58,11 +58,6 @@ pip install uv
 
 3. **Run the development server:**
    ```bash
-   uv run dev
-   ```
-
-   Alternatively, you can use:
-   ```bash
    uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
    ```
 
@@ -108,8 +103,8 @@ Example response:
 
 ### Available Scripts
 
-- `uv run dev` - Start development server with auto-reload
-- `uv run start` - Start production server
+- `uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000` - Start development server with auto-reload
+- `uv run uvicorn app.main:app --host 0.0.0.0 --port 8000` - Start production server
 - `uv run pytest` - Run tests (after installing dev dependencies)
 
 ### Installing Development Dependencies
@@ -162,7 +157,7 @@ curl -X POST "http://localhost:8000/api/upload" \
 For production deployment, use:
 
 ```bash
-uv run start
+uv run uvicorn app.main:app --host 0.0.0.0 --port 8080
 ```
 
 Or with custom host/port:
