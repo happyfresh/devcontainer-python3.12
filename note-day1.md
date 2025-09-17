@@ -40,10 +40,10 @@ Total time about 20 mins
 
 **Acceptance Criteria:**
 
-* [ ] Project runs from `frontend/` with `dev`, `build`, `preview` scripts.
-* [ ] Tailwind utilities render correctly in a sample component.
-* [ ] shadcn/ui `Button`, `Progress`, `Toaster` are available via `src/components/ui/*`.
-* [ ] `<Toaster />` mounted once at root; no console errors.
+* [x] Project runs from `frontend/` with `dev`, `build`, `preview` scripts.
+* [x] Tailwind utilities render correctly in a sample component.
+* [x] shadcn/ui `Button`, `Progress`, `Toaster` are available via `src/components/ui/*`.
+* [x] `<Toaster />` mounted once at root; no console errors.
 
 ---
 
@@ -57,8 +57,8 @@ Total time about 20 mins
 
 **Acceptance Criteria:**
 
-* [ ] Navigating to `/upload` renders `UploadPage.jsx`.
-* [ ] No hydration/console warnings.
+* [x] Navigating to `/upload` renders `UploadPage.jsx`.
+* [x] No hydration/console warnings.
 * [ ] Toaster still visible globally across routes.
 
 ---
