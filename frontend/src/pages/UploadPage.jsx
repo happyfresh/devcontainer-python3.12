@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Button } from '../components/ui/button'
 import { Progress } from '../components/ui/progress'
 import { toast } from '../components/ui/use-toast'
@@ -22,7 +22,7 @@ function UploadPage() {
 
     const processFiles = (files) => {
         const fileList = Array.from(files)
-        
+
         // Filter for image files
         const imageFiles = fileList.filter(file => {
             if (!file.type.startsWith('image/')) {
@@ -74,7 +74,7 @@ function UploadPage() {
         event.preventDefault()
         event.stopPropagation()
         setIsDragOver(false)
-        
+
         const files = event.dataTransfer.files
         processFiles(files)
     }
@@ -99,7 +99,7 @@ function UploadPage() {
 
             // Clean up previews
             Object.values(filePreviews).forEach(url => URL.revokeObjectURL(url))
-            
+
             // Reset state
             setSelectedFiles([])
             setFilePreviews({})
@@ -162,12 +162,11 @@ function UploadPage() {
 
                     {/* File list or empty state */}
                     {selectedFiles.length === 0 ? (
-                        <div 
-                            className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
-                                isDragOver 
-                                    ? 'border-primary bg-primary/5' 
+                        <div
+                            className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${isDragOver
+                                    ? 'border-primary bg-primary/5'
                                     : 'border-muted-foreground/25'
-                            }`}
+                                }`}
                             onDragOver={handleDragOver}
                             onDragLeave={handleDragLeave}
                             onDrop={handleDrop}
@@ -185,7 +184,7 @@ function UploadPage() {
                                 <h3 className="text-sm font-medium text-muted-foreground">
                                     Selected Files ({selectedFiles.length})
                                 </h3>
-                                <div 
+                                <div
                                     className="space-y-2 max-h-60 overflow-y-auto"
                                     role="list"
                                     aria-label={`${selectedFiles.length} selected files`}
@@ -193,7 +192,7 @@ function UploadPage() {
                                     {selectedFiles.map((file, index) => {
                                         const fileKey = `${file.name}-${file.size}`
                                         const previewUrl = filePreviews[fileKey]
-                                        
+
                                         return (
                                             <div
                                                 key={`${file.name}-${index}`}
@@ -201,8 +200,8 @@ function UploadPage() {
                                                 role="listitem"
                                             >
                                                 {previewUrl && (
-                                                    <img 
-                                                        src={previewUrl} 
+                                                    <img
+                                                        src={previewUrl}
                                                         alt={`Preview of ${file.name}`}
                                                         className="w-12 h-12 object-cover rounded border"
                                                     />
